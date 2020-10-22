@@ -11,6 +11,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/9.0.0/decimal.min.js"></script>
     <style>
       body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+      }
+      #wrapper {
+        max-width: 800px;
         display: flex;
         flex-direction: column;
         padding: 32px;
@@ -35,7 +42,7 @@
         margin: 8px 0;
       }
       #output-area {
-        margin-top: 16px 0;
+        margin: 16px 0;
         padding: 16px;
         border-radius: 8px;
         background-color: #ffeeee;
@@ -60,34 +67,36 @@
     </style>
   </head>
   <body>
-    <h1>年パス払戻額計算ツール</h1>
-    <div id="expression">
-      <h2>運営公式による計算式</h2>
-      ご返金額＝ （年間パスポート購入額÷（366日－有効期間に占める使用不可日数）） ×
-      残存日数（2020年2月29日以降の年パス有効期間 － 2020年2月29日以降の有効期間に占める使用不可日数）
-    </div>
-    <select id="age-select">
-      <option value="adult">大人／中人</option>
-      <option value="child">小人</option>
-      <option value="senior">シニア</option>
-    </select>
-    <select id="ticke-type-select">
-      <option value="two-park">共通</option>
-      <option value="one-park">単パ</option>
-    </select>
-    <input id="two-park-expiration-date" type="date" />
-    <div id="output-area">
-      <div id="start-date" class="output">年間パスポート有効開始日:</div>
-      <div id="ticket-price" class="output">年間パスポート購入額:</div>
-      <div id="annual-unavailable-days" class="output">有効期間に占める使用不可日数:</div>
-      <div id="available-days" class="output">2020年2月29日以降の年パス有効期間:</div>
-      <div id="unavailable-days" class="output">2020年2月29日以降の有効期間に占める使用不可日数:</div>
-      <div id="refund-amount" class="output">予想払戻額:</div>
-      <div id="notice">
-        ※予想が間違っている場合もあります。運営公式による計算に従ってください。このツールの利用によって生じる不利益・損害について、開発者は責任を負いません。
+    <div id="wrapper">
+      <h1>年パス払戻額計算ツール</h1>
+      <div id="expression">
+        <h2>運営公式による計算式</h2>
+        ご返金額＝ （年間パスポート購入額÷（366日－有効期間に占める使用不可日数）） ×
+        残存日数（2020年2月29日以降の年パス有効期間 － 2020年2月29日以降の有効期間に占める使用不可日数）
       </div>
+      <select id="age-select">
+        <option value="adult">大人／中人</option>
+        <option value="child">小人</option>
+        <option value="senior">シニア</option>
+      </select>
+      <select id="ticke-type-select">
+        <option value="two-park">共通</option>
+        <option value="one-park">単パ</option>
+      </select>
+      <input id="two-park-expiration-date" type="date" />
+      <div id="output-area">
+        <div id="start-date" class="output">年間パスポート有効開始日:</div>
+        <div id="ticket-price" class="output">年間パスポート購入額:</div>
+        <div id="annual-unavailable-days" class="output">有効期間に占める使用不可日数:</div>
+        <div id="available-days" class="output">2020年2月29日以降の年パス有効期間:</div>
+        <div id="unavailable-days" class="output">2020年2月29日以降の有効期間に占める使用不可日数:</div>
+        <div id="refund-amount" class="output">予想払戻額:</div>
+        <div id="notice">
+          ※予想が間違っている場合もあります。運営公式による計算に従ってください。このツールの利用によって生じる不利益・損害について、開発者は責任を負いません。
+        </div>
+      </div>
+      <a href="https://twitter.com/ngsw_taro" id="author">開発 @ngsw_taro</a>
     </div>
-    <a href="https://twitter.com/ngsw_taro" id="author">開発 @ngsw_taro</a>
     <script>
       const unavailableDates = [
         dayjs("2019-03-28"),
