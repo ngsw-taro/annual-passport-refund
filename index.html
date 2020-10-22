@@ -168,6 +168,11 @@
         dayjs("2021-05-02"),
         dayjs("2021-05-03"),
         dayjs("2021-05-31"),
+        dayjs("2021-08-12"),
+        dayjs("2021-08-13"),
+        dayjs("2021-08-14"),
+        dayjs("2021-09-18"),
+        dayjs("2021-09-19"),
       ];
       const baseDate = dayjs("2020-02-29");
 
@@ -217,7 +222,7 @@
       const calculate = () => {
         if (expirationDate == null) return;
 
-        const remainingDays = expirationDate.diff(baseDate, "day") + 1;
+        const remainingDays = Math.min(expirationDate.diff(baseDate, "day") + 1, 365);
         const unavailableDays = unavailableDates.filter(
           (it) => it.isAfter(baseDate) && (it.isBefore(expirationDate) || it.isSame(expirationDate))
         ).length;
