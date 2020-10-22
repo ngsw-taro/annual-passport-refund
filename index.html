@@ -93,6 +93,10 @@
         <option value="two-park">共通</option>
         <option value="one-park">単パ</option>
       </select>
+      <select id="neage">
+        <option value="before-neage">値上げ前　〜2020年4月1日</option>
+        <option value="after-neage">値上げ後　2020年4月1日〜</option>
+      </select>
       <label
         >有効期限
         <input id="two-park-expiration-date" type="date" />
@@ -164,6 +168,7 @@
 
       const ageSelect = document.getElementById("age-select");
       const ticketTypeSelect = document.getElementById("ticke-type-select");
+      const neageSelect = document.getElementById("neage");
       const startDateView = document.getElementById("start-date");
       const ticketPriceView = document.getElementById("ticket-price");
       const annualUnavailableDaysView = document.getElementById("annual-unavailable-days");
@@ -175,26 +180,28 @@
       let ticketPrice;
       let age = ageSelect.value;
       let ticketType = ticketTypeSelect.value;
+      let neage = neageSelect.value;
 
       const calcTicketPrice = () => {
         ticketPrice = (() => {
+          const isNeage = neage === "after-neage";
           if (ticketType === "two-park") {
             switch (age) {
               case "adult":
-                return 99000;
+                return isNeage ? 99000 : 91000;
               case "child":
                 return 57000;
               case "senior":
-                return 85000;
+                return isNeage ? 85000 : 76000;
             }
           }
           switch (age) {
             case "adult":
-              return 68000;
+              return isNeage ? 68000 : 62000;
             case "child":
               return 40000;
             case "senior":
-              return 58000;
+              return isNeage ? 58000 : 52000;
           }
         })();
         ticketPriceView.innerText = `年間パスポート購入額: ${ticketPrice}円`;
@@ -235,6 +242,11 @@
       };
       ticketTypeSelect.onchange = (e) => {
         ticketType = e.target.value;
+        calcTicketPrice();
+        calculate();
+      };
+      neageSelect.onchange = (e) => {
+        neage = e.target.value;
         calcTicketPrice();
         calculate();
       };
