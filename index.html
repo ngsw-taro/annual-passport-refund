@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <title>Title</title>
+    <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/9.0.0/decimal.min.js"></script>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        padding: 32px;
+      }
+      h1 {
+        font-size: 20px;
+        text-align: center;
+      }
+      #expression {
+        background-color: #eeeeee;
+        border-radius: 8px;
+        padding: 16px;
+        font-size: 8px;
+        margin-bottom: 16px;
+      }
+      #expression h2 {
+        font-size: 12px;
+        font-weight: bold;
+      }
+      select,
+      input {
+        margin: 8px 0;
+      }
+      #output-area {
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: #ffeeee;
+      }
+      .output {
+        font-size: 14px;
+      }
+      #refund-amount {
+        margin-top: 16px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+      #notice {
+        font-size: 12px;
+        color: #aa0000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>年パス払戻額計算ツール</h1>
+    <div id="expression">
+      <h2>運営公式による計算式</h2>
+      ご返金額＝ （年間パスポート購入額÷（366日－有効期間に占める使用不可日数）） ×
+      残存日数（2020年2月29日以降の年パス有効期間 － 2020年2月29日以降の有効期間に占める使用不可日数）
+    </div>
+    <select id="age-select">
+      <option value="adult">大人／中人</option>
+      <option value="child">小人</option>
+      <option value="senior">シニア</option>
+    </select>
+    <select id="ticke-type-select">
+      <option value="two-park">共通</option>
+      <option value="one-park">単パ</option>
+    </select>
+    <input id="two-park-expiration-date" type="date" />
+    <div id="output-area">
+      <div id="start-date" class="output">年間パスポート有効開始日:</div>
+      <div id="ticket-price" class="output">年間パスポート購入額:</div>
+      <div id="annual-unavailable-days" class="output">有効期間に占める使用不可日数:</div>
+      <div id="available-days" class="output">2020年2月29日以降の年パス有効期間:</div>
+      <div id="unavailable-days" class="output">2020年2月29日以降の有効期間に占める使用不可日数:</div>
+      <div id="refund-amount" class="output">予想払戻額:</div>
+      <div id="notice">
+        ※予想が間違っている場合もあります。運営公式による計算に従ってください。このツールの利用によって生じる不利益・損害について、開発者は責任を負いません。
+      </div>
+    </div>
+    <script>
+      const unavailableDates = [
+        dayjs("2019-03-28"),
+        dayjs("2019-03-29"),
+        dayjs("2019-03-30"),
+        dayjs("2019-03-31"),
+        dayjs("2019-08-12"),
+        dayjs("2019-08-13"),
+        dayjs("2019-08-14"),
+        dayjs("2019-10-12"),
+        dayjs("2019-10-13"),
+        dayjs("2019-10-14"),
+        dayjs("2019-11-23"),
+        dayjs("2019-11-24"),
+        dayjs("2019-12-07"),
+        dayjs("2019-12-08"),
+        dayjs("2019-12-28"),
+        dayjs("2019-12-29"),
+        dayjs("2019-12-30"),
+        dayjs("2020-03-28"),
+        dayjs("2020-03-29"),
+        dayjs("2020-05-02"),
+        dayjs("2020-05-03"),
+        dayjs("2020-05-04"),
+        dayjs("2020-05-25"),
+        dayjs("2020-07-24"),
+        dayjs("2020-07-25"),
+        dayjs("2020-08-11"),
+        dayjs("2020-08-12"),
+        dayjs("2020-08-13"),
+        dayjs("2020-09-19"),
+        dayjs("2020-09-20"),
+        dayjs("2020-09-21"),
+        dayjs("2020-10-10"),
+        dayjs("2020-10-11"),
+        dayjs("2020-11-16"),
+        dayjs("2020-11-21"),
+        dayjs("2020-11-22"),
+        dayjs("2020-12-05"),
+        dayjs("2020-12-06"),
+        dayjs("2020-12-28"),
+        dayjs("2020-12-29"),
+        dayjs("2020-12-30"),
+        dayjs("2021-01-02"),
+        dayjs("2021-03-27"),
+        dayjs("2021-03-28"),
+        dayjs("2021-05-02"),
+        dayjs("2021-05-03"),
+        dayjs("2021-05-31"),
+      ];
+      const baseDate = dayjs("2020-02-29");
+
+      const ageSelect = document.getElementById("age-select");
+      const ticketTypeSelect = document.getElementById("ticke-type-select");
+      const startDateView = document.getElementById("start-date");
+      const ticketPriceView = document.getElementById("ticket-price");
+      const annualUnavailableDaysView = document.getElementById("annual-unavailable-days");
+      const availableDaysView = document.getElementById("available-days");
+      const unavailableDaysView = document.getElementById("unavailable-days");
+      const refundAmountView = document.getElementById("refund-amount");
+
+      let expirationDate;
+      let ticketPrice;
+      let age = ageSelect.value;
+      let ticketType = ticketTypeSelect.value;
+
+      const calcTicketPrice = () => {
+        ticketPrice = (() => {
+          if (ticketType === "two-park") {
+            switch (age) {
+              case "adult":
+                return 99000;
+              case "child":
+                return 57000;
+              case "senior":
+                return 85000;
+            }
+          }
+          switch (age) {
+            case "adult":
+              return 68000;
+            case "child":
+              return 40000;
+            case "senior":
+              return 58000;
+          }
+        })();
+        ticketPriceView.innerText = `年間パスポート購入額: ${ticketPrice}円`;
+      };
+      calcTicketPrice();
+
+      const calculate = () => {
+        if (expirationDate == null) return;
+
+        const remainingDays = expirationDate.diff(baseDate, "day") + 1;
+        const unavailableDays = unavailableDates.filter(
+          (it) => it.isAfter(baseDate) && (it.isBefore(expirationDate) || it.isSame(expirationDate))
+        ).length;
+        const actualRemainingDays = remainingDays - unavailableDays;
+        const startDate = expirationDate.subtract(365, "day");
+        const annualUnavailableDays =
+          unavailableDates.filter((it) => it.isSame(startDate) || it.isAfter(startDate)).length + unavailableDays;
+        const refundAmount = new Decimal(ticketPrice).dividedBy(366 - annualUnavailableDays).times(actualRemainingDays);
+
+        startDateView.innerText = `年間パスポート有効開始日: ${startDate.format("YYYY/MM/DD")}`;
+        annualUnavailableDaysView.innerText = `有効期間に占める使用不可日数: ${annualUnavailableDays}`;
+        availableDaysView.innerText = `2020年2月29日以降の年パス有効期間: ${remainingDays}日間`;
+        unavailableDaysView.innerText = `2020年2月29日以降の有効期間に占める使用不可日数: ${unavailableDays}`;
+        refundAmountView.innerText = `予想払戻額: ${refundAmount.ceil()}円`;
+      };
+
+      document.getElementById("two-park-expiration-date").onchange = (e) => {
+        expirationDate = dayjs(e.target.value);
+        calculate();
+      };
+      ageSelect.onchange = (e) => {
+        age = e.target.value;
+        calcTicketPrice();
+        calculate();
+      };
+      ticketTypeSelect.onchange = (e) => {
+        ticketType = e.target.value;
+        calcTicketPrice();
+        calculate();
+      };
+    </script>
+  </body>
+</html>
