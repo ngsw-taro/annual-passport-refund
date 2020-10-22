@@ -212,13 +212,16 @@
         const startDate = expirationDate.subtract(365, "day");
         const annualUnavailableDays =
           unavailableDates.filter((it) => it.isSame(startDate) || it.isAfter(startDate)).length + unavailableDays;
-        const refundAmount = new Decimal(ticketPrice).dividedBy(366 - annualUnavailableDays).times(actualRemainingDays);
+        const refundAmount = new Decimal(ticketPrice)
+          .dividedBy(366 - annualUnavailableDays)
+          .times(actualRemainingDays)
+          .ceil();
 
         startDateView.innerText = `年間パスポート有効開始日: ${startDate.format("YYYY/MM/DD")}`;
         annualUnavailableDaysView.innerText = `有効期間に占める使用不可日数: ${annualUnavailableDays}`;
         availableDaysView.innerText = `2020年2月29日以降の年パス有効期間: ${remainingDays}日間`;
         unavailableDaysView.innerText = `2020年2月29日以降の有効期間に占める使用不可日数: ${unavailableDays}`;
-        refundAmountView.innerText = `予想払戻額: ${refundAmount.ceil()}円`;
+        refundAmountView.innerText = `予想払戻額: ${refundAmount <= 0 ? "対象外" : `${refundAmount}円`}`;
       };
 
       document.getElementById("two-park-expiration-date").onchange = (e) => {
