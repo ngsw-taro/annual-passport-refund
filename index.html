@@ -16,16 +16,19 @@
         display: flex;
         justify-content: center;
       }
+
       #wrapper {
         max-width: 800px;
         display: flex;
         flex-direction: column;
         padding: 32px;
       }
+
       h1 {
         font-size: 20px;
         text-align: center;
       }
+
       #expression {
         background-color: #eeeeee;
         border-radius: 8px;
@@ -33,32 +36,39 @@
         font-size: 8px;
         margin-bottom: 16px;
       }
+
       #expression h2 {
         font-size: 12px;
         font-weight: bold;
       }
+
       select,
-      input {
+      label {
         margin: 8px 0;
       }
+
       #output-area {
         margin: 16px 0;
         padding: 16px;
         border-radius: 8px;
         background-color: #ffeeee;
       }
+
       .output {
         font-size: 14px;
       }
+
       #refund-amount {
         margin-top: 16px;
         font-size: 18px;
         font-weight: bold;
       }
+
       #notice {
         font-size: 12px;
         color: #aa0000;
       }
+
       #author {
         color: #888888;
         font-size: 12px;
@@ -83,7 +93,10 @@
         <option value="two-park">共通</option>
         <option value="one-park">単パ</option>
       </select>
-      <input id="two-park-expiration-date" type="date" />
+      <label
+        >有効期限
+        <input id="two-park-expiration-date" type="date" />
+      </label>
       <div id="output-area">
         <div id="start-date" class="output">年間パスポート有効開始日:</div>
         <div id="ticket-price" class="output">年間パスポート購入額:</div>
