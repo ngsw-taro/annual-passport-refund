@@ -94,8 +94,9 @@
         <option value="one-park">単パ</option>
       </select>
       <select id="neage">
-        <option value="before-neage">値上げ前　〜2020年4月1日</option>
-        <option value="after-neage">値上げ後　2020年4月1日〜</option>
+        <option value="initial">増税前 〜2019年10月1日</option>
+        <option value="zozei">増税後・値上げ前　〜2020年4月1日</option>
+        <option value="neage">値上げ後　2020年4月1日〜</option>
       </select>
       <label
         >有効期限
@@ -188,24 +189,25 @@
 
       const calcTicketPrice = () => {
         ticketPrice = (() => {
-          const isNeage = neage === "after-neage";
+          const isZozei = neage === "zozei";
+          const isNeage = neage === "neage";
           if (ticketType === "two-park") {
             switch (age) {
               case "adult":
-                return isNeage ? 99000 : 91000;
+                return isNeage ? 99000 : isZozei ? 91000 : 89000;
               case "child":
-                return 57000;
+                return isNeage ? 57000 : isZozei ? 57000 : 56000;
               case "senior":
-                return isNeage ? 85000 : 76000;
+                return isNeage ? 85000 : isZozei ? 76000 : 75000;
             }
           }
           switch (age) {
             case "adult":
-              return isNeage ? 68000 : 62000;
+              return isNeage ? 68000 : isZozei ? 62000 : 61000;
             case "child":
-              return 40000;
+              return isNeage ? 40000 : isZozei ? 40000 : 39000;
             case "senior":
-              return isNeage ? 58000 : 52000;
+              return isNeage ? 58000 : isZozei ? 52000 : 51000;
           }
         })();
         ticketPriceView.innerText = `年間パスポート購入額: ${ticketPrice}円`;
