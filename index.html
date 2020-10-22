@@ -242,7 +242,9 @@
         annualUnavailableDaysView.innerText = `有効期間に占める使用不可日数: ${annualUnavailableDays}`;
         availableDaysView.innerText = `2020年2月29日以降の年パス有効期間: ${remainingDays}日間`;
         unavailableDaysView.innerText = `2020年2月29日以降の有効期間に占める使用不可日数: ${unavailableDays}`;
-        refundAmountView.innerText = `予想払戻額: ${refundAmount <= 0 ? "対象外" : `${refundAmount}円`}`;
+        refundAmountView.innerText = `予想払戻額: ${
+          refundAmount <= 0 ? "対象外" : `${Math.round(refundAmount / 1000) * 1000}円くらい？`
+        }`;
       };
 
       document.getElementById("two-park-expiration-date").onchange = (e) => {
