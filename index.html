@@ -217,8 +217,11 @@
         ).length;
         const actualRemainingDays = remainingDays - unavailableDays;
         const startDate = expirationDate.subtract(365, "day");
-        const annualUnavailableDays =
-          unavailableDates.filter((it) => it.isSame(startDate) || it.isAfter(startDate)).length + unavailableDays;
+        const annualUnavailableDays = unavailableDates.filter(
+          (it) =>
+            (it.isSame(startDate) || it.isAfter(startDate)) &&
+            (it.isSame(expirationDate) || it.isBefore(expirationDate))
+        ).length;
         const refundAmount = new Decimal(ticketPrice)
           .dividedBy(366 - annualUnavailableDays)
           .times(actualRemainingDays)
