@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"
     />
-    <title>Title</title>
+    <title>年パス払戻額計算ツール</title>
     <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/9.0.0/decimal.min.js"></script>
     <style>
@@ -35,7 +35,7 @@
         margin: 8px 0;
       }
       #output-area {
-        margin-top: 16px;
+        margin-top: 16px 0;
         padding: 16px;
         border-radius: 8px;
         background-color: #ffeeee;
@@ -51,6 +51,11 @@
       #notice {
         font-size: 12px;
         color: #aa0000;
+      }
+      #author {
+        color: #888888;
+        font-size: 12px;
+        text-align: center;
       }
     </style>
   </head>
@@ -82,6 +87,7 @@
         ※予想が間違っている場合もあります。運営公式による計算に従ってください。このツールの利用によって生じる不利益・損害について、開発者は責任を負いません。
       </div>
     </div>
+    <a href="https://twitter.com/ngsw_taro" id="author">開発 @ngsw_taro</a>
     <script>
       const unavailableDates = [
         dayjs("2019-03-28"),
